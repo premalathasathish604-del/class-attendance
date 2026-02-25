@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block header %}Apply for Leave / On-Duty{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card p-4">
+            <h5 class="fw-bold mb-4 text-center">Application Form</h5>
+            <form method="POST">
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">Request Type</label>
+                    <select name="req_type" id="req_type" class="form-select" required onchange="updateCategories()">
+                        <option value="Leave">Leave</option>
+                        <option value="On-Duty">On-Duty</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">Category</label>
+                    <select name="category" id="category" class="form-select" required>
+                        <!-- Options populated by JS -->
+                    </select>
+                </div>
+
+                <script>
+                    const categories = {
+                        'Leave': ['Medical', 'Personal', 'Family Emergency', 'Vacation', 'Other'],
+                        'On-Duty': ['Event Coordination', 'Workshop/Seminar', 'Project Work', 'Sports', 'Other']
+                    };
+
+                    function updateCategories() {
+                        const type = document.getElementById('req_type').value;
+                        const catSelect = document.getElementById('category');
+                        catSelect.innerHTML = '';
+
+                        categories[type].forEach(cat => {
+                            const opt = document.createElement('option');
+                            opt.value = cat;
+                            opt.textContent = cat;
+                            catSelect.appendChild(opt);
+                        });
+                    }
+
+                    // Initialize on load
+                    window.onload = updateCategories;
+                </script>
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label small fw-bold">From Date</label>
+                        <input type="date" name="from_date" class="form-control" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label small fw-bold">To Date</label>
+                        <input type="date" name="to_date" class="form-control" required>
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <label class="form-label small fw-bold">Reason</label>
+                    <textarea name="reason" class="form-control" rows="4" placeholder="Briefly explain your reason..."
+                        required></textarea>
+                </div>
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary py-2 fw-semibold">Submit Request</button>
+                    <a href="{{ url_for('index') }}" class="btn btn-link py-2 mt-2 text-decoration-none">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block header %}Faculty Dashboard{% endblock %}
+
+{% block content %}
+<div class="row g-4 mb-4">
+    <div class="col-md-6">
+        <div class="card p-4 h-100 text-center d-flex flex-column justify-content-center">
+            <h5 class="fw-bold mb-4">Application Form</h5>
+            <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+                <a href="{{ url_for('apply_request') }}" class="btn btn-primary py-3 px-5">
+                    <i class="fas fa-paper-plane me-2"></i> Apply for Leave / OD
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card p-4 h-100">
+            <h5 class="fw-bold mb-3">Your Request Summary</h5>
+            <div class="d-flex align-items-center justify-content-center p-4">
+                <div class="text-center">
+                    <h1 class="display-3 fw-bold text-primary mb-0">{{ requests|length }}</h1>
+                    <p class="text-muted">Total Requests Submitted</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card p-4">
+    <h5 class="fw-bold mb-4">Your Request History</h5>
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead class="table-light">
+                <tr>
+                    <th>Type</th>
+                    <th>Category</th>
+                    <th>From Date</th>
+                    <th>To Date</th>
+                    <th>Reason</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for req in requests %}
+                <tr>
+                    <td>
+                        <span
+                            class="badge {% if req.req_type == 'On-Duty' %}bg-info text-dark{% else %}bg-secondary{% endif %}">
+                            {{ req.req_type }}
+                        </span>
+                    </td>
+                    <td><span class="badge bg-light text-dark border">{{ req.category }}</span></td>
+                    <td>{{ req.from_date }}</td>
+                    <td>{{ req.to_date }}</td>
+                    <td>{{ req.reason }}</td>
+                    <td>
+                        <span
+                            class="badge {% if req.status == 'Approved' %}bg-success{% elif req.status == 'Pending' %}bg-warning{% else %}bg-danger{% endif %}">
+                            {{ req.status }}
+                        </span>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5" class="text-center py-4 text-muted">No requests found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

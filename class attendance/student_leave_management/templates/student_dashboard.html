@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block header %}Student Dashboard{% endblock %}
+
+{% block content %}
+<div class="row g-4 mb-4">
+    <div class="col-md-6">
+        <div class="card p-4 h-100">
+            <h5 class="fw-bold mb-3">Attendance Summary</h5>
+            <div class="d-flex align-items-center justify-content-center p-4">
+                <div class="text-center">
+                    <h1 class="display-3 fw-bold text-primary mb-0">{{ attendance_pct }}%</h1>
+                    <p class="text-muted">Current Attendance</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card p-4 h-100 text-center d-flex flex-column justify-content-center">
+            <h5 class="fw-bold mb-4">Request Leave / OD</h5>
+            <a href="{{ url_for('apply_request') }}" class="btn btn-primary py-3 px-5 mx-auto">
+                <i class="fas fa-paper-plane me-2"></i> Apply Now
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="card p-4">
+    <h5 class="fw-bold mb-4">Your Request History</h5>
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead class="table-light">
+                <tr>
+                    <th>Type</th>
+                    <th>Category</th>
+                    <th>From Date</th>
+                    <th>To Date</th>
+                    <th>Reason</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for leave in leaves %}
+                <tr>
+                    <td><span class="badge bg-light text-dark border">{{ leave.req_type }}</span></td>
+                    <td><span class="badge bg-light text-dark border">{{ leave.category }}</span></td>
+                    <td>{{ leave.from_date }}</td>
+                    <td>{{ leave.to_date }}</td>
+                    <td>{{ leave.reason }}</td>
+                    <td>
+                        <span
+                            class="badge {% if leave.status == 'Approved' %}bg-success{% elif leave.status == 'Pending' %}bg-warning{% else %}bg-danger{% endif %}">
+                            {{ leave.status }}
+                        </span>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5" class="text-center py-4 text-muted">No requests found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

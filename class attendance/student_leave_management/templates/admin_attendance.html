@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block header %}Attendance Management{% endblock %}
+
+{% block content %}
+<div class="card p-4 mb-4">
+    <div class="row align-items-center">
+        <div class="col-md-8">
+            <form method="GET" class="row g-3 align-items-end">
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">Select Date</label>
+                    <input type="date" name="date" class="form-control" value="{{ date }}"
+                        onchange="this.form.submit()">
+                </div>
+            </form>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="{{ url_for('export_attendance') }}" class="btn btn-outline-success">
+                <i class="fas fa-file-csv me-2"></i> Export CSV
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="card p-4">
+    <form method="POST">
+        <input type="hidden" name="date" value="{{ date }}">
+        <input type="hidden" name="mark" value="1">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Student Name</th>
+                        <th>Email</th>
+                        <th width="300">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in students %}
+                    <tr>
+                        <td>{{ student.name }}</td>
+                        <td>{{ student.email }}</td>
+                        <td>
+                            <div class="btn-group w-100" role="group">
+                                <input type="radio" class="btn-check" name="status_{{ student.id }}"
+                                    id="p_{{ student.id }}" value="Present" checked>
+                                <label class="btn btn-outline-success" for="p_{{ student.id }}">Present</label>
+
+                                <input type="radio" class="btn-check" name="status_{{ student.id }}"
+                                    id="a_{{ student.id }}" value="Absent">
+                                <label class="btn btn-outline-danger" for="a_{{ student.id }}">Absent</label>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="text-end mt-3">
+            <button type="submit" class="btn btn-primary px-5">Save Attendance</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

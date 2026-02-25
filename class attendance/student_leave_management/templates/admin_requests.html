@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block header %}Requests Management{% endblock %}
+
+{% block content %}
+<div class="card p-4">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Name</th>
+                    <th>Role</th>
+                    <th>Type</th>
+                    <th>Category</th>
+                    <th>From Date</th>
+                    <th>To Date</th>
+                    <th>Reason</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for req in requests %}
+                <tr>
+                    <td>{{ req.name }}</td>
+                    <td><span class="badge bg-light text-dark border">{{ req.role.capitalize() }}</span></td>
+                    <td>
+                        <span
+                            class="badge {% if req.req_type == 'On-Duty' %}bg-info text-dark{% else %}bg-secondary{% endif %}">
+                            {{ req.req_type }}
+                        </span>
+                    </td>
+                    <td><span class="badge bg-light text-dark border">{{ req.category }}</span></td>
+                    <td>{{ req.from_date }}</td>
+                    <td>{{ req.to_date }}</td>
+                    <td><small>{{ req.reason }}</small></td>
+                    <td>
+                        <span
+                            class="badge {% if req.status == 'Approved' %}bg-success{% elif req.status == 'Pending' %}bg-warning{% else %}bg-danger{% endif %}">
+                            {{ req.status }}
+                        </span>
+                    </td>
+                    <td>
+                        {% if req.status == 'Pending' %}
+                        <div class="btn-group">
+                            <a href="{{ url_for('handle_request', id=req.id, action='approve') }}"
+                                class="btn btn-sm btn-success">
+                                <i class="fas fa-check"></i>
+                            </a>
+                            <a href="{{ url_for('handle_request', id=req.id, action='reject') }}"
+                                class="btn btn-sm btn-danger">
+                                <i class="fas fa-times"></i>
+                            </a>
+                        </div>
+                        {% else %}
+                        <span class="text-muted small">Processed</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="8" class="text-center py-4 text-muted">No requests found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block header %}User Management{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between mb-4 flex-wrap gap-2">
+    <form class="d-flex" style="max-width: 400px;">
+        <input class="form-control me-2" type="search" name="search" placeholder="Search..." value="{{ search }}">
+        <select name="role" class="form-select me-2" style="width: 150px;">
+            <option value="">All Roles</option>
+            <option value="student" {% if role_filter=='student' %}selected{% endif %}>Students</option>
+            <option value="faculty" {% if role_filter=='faculty' %}selected{% endif %}>Faculty</option>
+            <option value="management" {% if role_filter=='management' %}selected{% endif %}>Management</option>
+        </select>
+        <button class="btn btn-outline-primary" type="submit">Filter</button>
+    </form>
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addUserModal">
+        <i class="fas fa-plus me-2"></i> Add New User
+    </button>
+</div>
+
+<div class="card p-4">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Name</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user.name }}</td>
+                    <td><code class="small">{{ user.username or '-' }}</code></td>
+                    <td>{{ user.email or '-' }}</td>
+                    <td><span class="badge bg-light text-dark border">{{ user.role.capitalize() }}</span></td>
+                    <td>
+                        <a href="{{ url_for('delete_user', id=user.id) }}" class="btn btn-sm btn-outline-danger"
+                            onclick="return confirm('Are you sure?')">
+                            <i class="fas fa-trash"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="4" class="text-center py-4 text-muted">No users found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Add User Modal -->
+<div class="modal fade" id="addUserModal" tabindex="-1">
+    <div class="modal-dialog">
+        <form method="POST" class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add New User</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" name="name" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Username (Optional for S/F)</label>
+                    <input type="text" name="username" class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Email Address (Optional for M)</label>
+                    <input type="email" name="email" class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Temporary Password</label>
+                    <input type="password" name="password" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Role</label>
+                    <select name="role" class="form-select" required>
+                        <option value="student">Student</option>
+                        <option value="faculty">Faculty</option>
+                        <option value="management">Management</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Save User</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
